@@ -35,12 +35,16 @@ export function ExpenseForm({ onExpenseAdded }: ExpenseFormProps) {
 
     setIsLoading(true);
     const supabase = createClient();
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
 
     const { error } = await supabase.from("expenses").insert({
       amount: parseFloat(amount),
       category,
       description,
       date,
+      user_id: user.id,
     });
 
     if (!error) {
